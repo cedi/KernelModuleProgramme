@@ -14,7 +14,9 @@ MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("NfHooks Firewall");
 MODULE_AUTHOR("Cedric Kienzler");
 
-/*structure for firewall policies*/
+/*
+ * structure for firewall policies
+ */
 struct mf_rule_desp
 {
 	unsigned char in_out;
