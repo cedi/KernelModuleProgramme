@@ -72,7 +72,7 @@ unsigned int ip_str_to_hl(char* ip_str)
 	ip = (ip | (ip_array[2] << 8));
 	ip = (ip | ip_array[3]);
 
-	//printk(KERN_INFO "ip_str_to_hl convert %s to %un", ip_str, ip);
+	//printk(KERN_DEBUG "ip_str_to_hl convert %s to %u", ip_str, ip);
 	return ip;
 }
 
@@ -85,12 +85,12 @@ bool check_ip(unsigned int ip, unsigned int ip_rule, unsigned int mask)
 	unsigned int tmp = ntohl(ip);    //network to host long
 	int cmp_len = 32;
 	int i = 0, j = 0;
-	printk(KERN_INFO "compare ip: %u <=> %un", tmp, ip_rule);
+	printk(KERN_DEBUG "compare ip: %u <=> %u", tmp, ip_rule);
 
 	if (mask != 0)
 	{
-		//printk(KERN_INFO "deal with maskn");
-		//printk(KERN_INFO "mask: %d.%d.%d.%dn", mask[0], mask[1], mask[2], mask[3]);
+		//printk(KERN_DEBUG "deal with mask");
+		//printk(KERN_DEBUG "mask: %d.%d.%d.%d", mask[0], mask[1], mask[2], mask[3]);
 		cmp_len = 0;
 
 		for (i = 0; i < 32; ++i)
@@ -114,7 +114,7 @@ bool check_ip(unsigned int ip, unsigned int ip_rule, unsigned int mask)
 	{
 		if ((tmp & (1 << i)) != (ip_rule & (1 << i)))
 		{
-			printk(KERN_INFO "ip compare: %d bit doesn't matchn", (32-i));
+			printk(KERN_DEBUG "ip compare: %d bit doesn't match", (32-i));
 			return false;
 		}
 	}

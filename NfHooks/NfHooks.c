@@ -54,7 +54,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 		}
 	}
 
-	printk(KERN_INFO "OUT packet info:"
+	printk(KERN_DEBUG "OUT packet info:"
 	       "src ip: %u,"
 	       "src port: %u,"
 	       "dest ip: %u,"
@@ -73,7 +73,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 	{
 		i++;
 		a_rule = list_entry(p, struct mf_rule, list);
-		printk(KERN_INFO "rule %d:"
+		printk(KERN_DEBUG "rule %d:"
 		       "a_rule->in_out = %u,"
 		       "a_rule->src_ip = %u,"
 		       "a_rule->src_netmask=%u,"
@@ -83,13 +83,13 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 		       "a_rule->dest_port=%u,"
 		       "a_rule->proto=%u,"
 		       "a_rule->action=%u"
-		       ,i
+		       , i
 		       , a_rule->in_out
 		       , a_rule->src_ip
 		       , a_rule->src_netmask
 		       , a_rule->src_port
 		       , a_rule->dest_ip
-		       ,a_rule->dest_netmask
+		       , a_rule->dest_netmask
 		       , a_rule->dest_port
 		       , a_rule->proto
 		       , a_rule->action
@@ -98,7 +98,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 		//if a rule doesn't specify as "out", skip it
 		if (a_rule->in_out != 2)
 		{
-			printk(KERN_INFO "rule %d (a_rule->in_out: %u) not match: out packet, rule doesn't specify as out",
+			printk(KERN_DEBUG "rule %d (a_rule->in_out: %u) not match: out packet, rule doesn't specify as out",
 			       i, a_rule->in_out);
 			continue;
 		}
@@ -107,14 +107,14 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 			//check the protocol
 			if ((a_rule->proto==1) && (ip_header->protocol != 6))
 			{
-				printk(KERN_INFO "rule %d not match: rule-TCP, packet->not TCP", i);
+				printk(KERN_DEBUG "rule %d not match: rule-TCP, packet->not TCP", i);
 				continue;
 			}
 			else
 			{
 				if ((a_rule->proto==2) && (ip_header->protocol != 17))
 				{
-					printk(KERN_INFO "rule %d not match: rule-UDP, packet->not UDP", i);
+					printk(KERN_DEBUG "rule %d not match: rule-UDP, packet->not UDP", i);
 					continue;
 				}
 			}
@@ -128,7 +128,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 			{
 				if (!check_ip(src_ip, a_rule->src_ip, a_rule->src_netmask))
 				{
-					printk(KERN_INFO "rule %d not match: src ip mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: src ip mismatch", i);
 					continue;
 				}
 			}
@@ -141,7 +141,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 			{
 				if (!check_ip(dest_ip, a_rule->dest_ip, a_rule->dest_netmask))
 				{
-					printk(KERN_INFO "rule %d not match: dest ip mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: dest ip mismatch", i);
 					continue;
 				}
 			}
@@ -154,7 +154,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 			else
 				if (src_port!=a_rule->src_port)
 				{
-					printk(KERN_INFO "rule %d not match: src port dismatch", i);
+					printk(KERN_DEBUG "rule %d not match: src port dismatch", i);
 					continue;
 				}
 
@@ -166,7 +166,7 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 			{
 				if (dest_port!=a_rule->dest_port)
 				{
-					printk(KERN_INFO "rule %d not match: dest port mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: dest port mismatch", i);
 					continue;
 				}
 			}
@@ -174,20 +174,20 @@ unsigned int hook_func_out(unsigned int hooknum, struct sk_buff* skb,
 			//a match is found: take action
 			if (a_rule->action==0)
 			{
-				printk(KERN_INFO "a match is found: %d, drop the packet", i);
-				printk(KERN_INFO "---------------------------------------");
+				printk(KERN_DEBUG "a match is found: %d, drop the packet", i);
+				printk(KERN_DEBUG "---------------------------------------");
 				return NF_ACCEPT; //NF_DROP;
 			}
 			else
 			{
-				printk(KERN_INFO "a match is found: %d, accept the packet", i);
-				printk(KERN_INFO "---------------------------------------");
+				printk(KERN_DEBUG "a match is found: %d, accept the packet", i);
+				printk(KERN_DEBUG "---------------------------------------");
 				return NF_ACCEPT;
 			}
 		}
 	}
-	printk(KERN_INFO "no matching is found, accept the packet");
-	printk(KERN_INFO "---------------------------------------");
+	printk(KERN_DEBUG "no matching is found, accept the packet");
+	printk(KERN_DEBUG "---------------------------------------");
 	return NF_ACCEPT;
 }
 
@@ -232,7 +232,7 @@ unsigned int hook_func_in(unsigned int hooknum
 		}
 	}
 
-	printk(KERN_INFO "IN packet info:"
+	printk(KERN_DEBUG "IN packet info:"
 	       "src ip: %u,"
 	       "src port: %u,"
 	       "dest ip: %u,"
@@ -250,7 +250,7 @@ unsigned int hook_func_in(unsigned int hooknum
 	{
 		i++;
 		a_rule = list_entry(p, struct mf_rule, list);
-		printk(KERN_INFO "rule %d:"
+		printk(KERN_DEBUG "rule %d:"
 		       "a_rule->in_out = %u,"
 		       "a_rule->src_ip = %u,"
 		       "a_rule->src_netmask=%u,"
@@ -275,7 +275,7 @@ unsigned int hook_func_in(unsigned int hooknum
 		//if a rule doesn't specify as "i", skip it
 		if (a_rule->in_out != 1)
 		{
-			printk(KERN_INFO "rule %d (a_rule->in_out:%u) not match: in packet, rule doesn't specify as in", i,
+			printk(KERN_DEBUG "rule %d (a_rule->in_out:%u) not match: in packet, rule doesn't specify as in", i,
 			       a_rule->in_out);
 			continue;
 		}
@@ -284,14 +284,14 @@ unsigned int hook_func_in(unsigned int hooknum
 			//check the protocol
 			if ((a_rule->proto==1) && (ip_header->protocol != 6))
 			{
-				printk(KERN_INFO "rule %d not match: rule-TCP, packet->not TCP", i);
+				printk(KERN_DEBUG "rule %d not match: rule-TCP, packet->not TCP", i);
 				continue;
 			}
 			else
 			{
 				if ((a_rule->proto==2) && (ip_header->protocol != 17))
 				{
-					printk(KERN_INFO "rule %d not match: rule-UDP, packet->not UDP", i);
+					printk(KERN_DEBUG "rule %d not match: rule-UDP, packet->not UDP", i);
 					continue;
 				}
 			}
@@ -305,7 +305,7 @@ unsigned int hook_func_in(unsigned int hooknum
 			{
 				if (!check_ip(src_ip, a_rule->src_ip, a_rule->src_netmask))
 				{
-					printk(KERN_INFO "rule %d not match: src ip mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: src ip mismatch", i);
 					continue;
 				}
 			}
@@ -318,7 +318,7 @@ unsigned int hook_func_in(unsigned int hooknum
 			{
 				if (!check_ip(dest_ip, a_rule->dest_ip, a_rule->dest_netmask))
 				{
-					printk(KERN_INFO "rule %d not match: dest ip mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: dest ip mismatch", i);
 					continue;
 				}
 			}
@@ -332,7 +332,7 @@ unsigned int hook_func_in(unsigned int hooknum
 			{
 				if (src_port!=a_rule->src_port)
 				{
-					printk(KERN_INFO "rule %d not match: src port mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: src port mismatch", i);
 					continue;
 				}
 			}
@@ -345,7 +345,7 @@ unsigned int hook_func_in(unsigned int hooknum
 			{
 				if (dest_port!=a_rule->dest_port)
 				{
-					printk(KERN_INFO "rule %d not match: dest port mismatch", i);
+					printk(KERN_DEBUG "rule %d not match: dest port mismatch", i);
 					continue;
 				}
 			}
@@ -353,20 +353,20 @@ unsigned int hook_func_in(unsigned int hooknum
 			//a match is found: take action
 			if (a_rule->action==0)
 			{
-				printk(KERN_INFO "a match is found: %d, drop the packet", i);
-				printk(KERN_INFO "---------------------------------------");
+				printk(KERN_DEBUG "a match is found: %d, drop the packet", i);
+				printk(KERN_DEBUG "---------------------------------------");
 				return NF_ACCEPT; //NF_DROP;
 			}
 			else
 			{
-				printk(KERN_INFO "a match is found: %d, accept the packet", i);
-				printk(KERN_INFO "---------------------------------------");
+				printk(KERN_DEBUG "a match is found: %d, accept the packet", i);
+				printk(KERN_DEBUG "---------------------------------------");
 				return NF_ACCEPT;
 			}
 		}
 	}
-	printk(KERN_INFO "no matching is found, accept the packet");
-	printk(KERN_INFO "---------------------------------------");
+	printk(KERN_DEBUG "no matching is found, accept the packet");
+	printk(KERN_DEBUG "---------------------------------------");
 	return NF_ACCEPT;
 }
 
@@ -377,7 +377,7 @@ void add_a_rule(struct mf_rule_desp* a_rule_desp)
 
 	if (a_rule == NULL)
 	{
-		printk(KERN_INFO "error: cannot allocate memory for add_a_rule");
+		printk(KERN_DEBUG "error: cannot allocate memory for add_a_rule");
 		return;
 	}
 
@@ -391,7 +391,7 @@ void add_a_rule(struct mf_rule_desp* a_rule_desp)
 	a_rule->proto = a_rule_desp->proto;
 	a_rule->action = a_rule_desp->action;
 
-	printk(KERN_INFO "add_a_rule: "
+	printk(KERN_DEBUG "add_a_rule: "
 	       "in_out=%u, "
 	       "src_ip=%u, "
 	       "src_netmask=%u, "
@@ -416,52 +416,12 @@ void add_a_rule(struct mf_rule_desp* a_rule_desp)
 	list_add_tail(&(a_rule->list), &(policy_list.list));
 }
 
-void add_a_test_rule(void)
-{
-	struct mf_rule_desp a_test_rule;
-	printk(KERN_INFO "add_a_test_rule");
-	printk(KERN_INFO "for IP 192.168.0.250");
-
-
-	a_test_rule.in_out = 2;
-	a_test_rule.src_ip = (char*)kmalloc(16, GFP_KERNEL);
-	strcpy(a_test_rule.src_ip, "192.168.0.250");
-
-	a_test_rule.src_netmask = (char*)kmalloc(16, GFP_KERNEL);
-	strcpy(a_test_rule.src_netmask, "255.255.255.0");
-	a_test_rule.src_port = NULL;
-	a_test_rule.dest_ip = NULL;
-	a_test_rule.dest_netmask = NULL;
-	a_test_rule.dest_port = NULL;
-	a_test_rule.proto = 6;
-	a_test_rule.action = 0;
-
-	add_a_rule(&a_test_rule);
-
-
-	printk(KERN_INFO "for IP 192.168.0.103");
-
-	a_test_rule.in_out = 2;
-	a_test_rule.src_ip = (char*)kmalloc(16, GFP_KERNEL);
-	strcpy(a_test_rule.src_ip, "192.168.0.103");
-	a_test_rule.src_netmask = (char*)kmalloc(16, GFP_KERNEL);
-	strcpy(a_test_rule.src_netmask, "255.255.255.0");
-	a_test_rule.src_port = NULL;
-	a_test_rule.dest_ip = NULL;
-	a_test_rule.dest_netmask = NULL;
-	a_test_rule.dest_port = NULL;
-	a_test_rule.proto = 6;
-	a_test_rule.action = 0;
-
-	add_a_rule(&a_test_rule);
-}
-
 void delete_a_rule(int num)
 {
 	int i = 0;
 	struct list_head* p, *q;
 	struct mf_rule* a_rule;
-	printk(KERN_INFO "delete a rule: %d", num);
+	printk(KERN_DEBUG "delete a rule: %d", num);
 	list_for_each_safe(p, q, &policy_list.list)
 	{
 		++i;
